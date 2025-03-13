@@ -2,7 +2,7 @@
 
 > A user-friendly Leave Management website for fellows
 
-![python-image] ![react-image] ![fastapi-image] 
+![python-image] ![react-image] ![fastapi-image] ![vite-image] 
 
 ## Overview
 
@@ -141,4 +141,5 @@ Dept:  證券 數據科學部 資料服務處(5F)
 [python-image]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
 [react-image]: https://shields.io/badge/react-black?logo=react&style=for-the-badge
 [fastapi-image]: https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi
+[vite-image]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=Vite&logoColor=white
 [duckdb-image]: https://img.shields.io/badge/Duckdb-_-blue
