@@ -98,6 +98,10 @@ def SelectData(databaseName: str) -> dict:
             WHERE
                 DATE >= current_date  -- filter by date
                 AND DELETE_TIME = 'N' -- valid record
+            ORDER BY
+                DATE,
+                TIME,
+                EMP_NAME
             ;
             """
 
