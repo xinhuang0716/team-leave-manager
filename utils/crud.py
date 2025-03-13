@@ -95,9 +95,9 @@ def SelectData(databaseName: str) -> dict:
                 *
             FROM
                 LEAVE
-            -- WHERE
-            --    DATE >= current_date  -- filter by date
-            --    AND DELETE_TIME = 'N' -- valid record
+            WHERE
+                DATE >= current_date  -- filter by date
+                AND DELETE_TIME = 'N' -- valid record
             ;
             """
 
