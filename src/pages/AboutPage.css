@@ -1,0 +1,23 @@
+.about-page {
+  line-height: 1.4;
+  overflow-y: auto;
+  position: relative;
+  max-height: 96vh;
+}
+
+.about-page h2 {
+  border-bottom: 2px solid #ddd273;
+}
+
+.about-page ul {
+  list-style-type: none;
+  padding: 0;
+  width: fit-content;
+}
+
+.about-page ul li {
+  background: rgba(252, 215, 252, 0.575);
+  margin: 10px 0;
+  padding: 10px 20px 10px 20px;
+  border-radius: 8px;
+}

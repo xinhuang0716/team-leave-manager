@@ -1,9 +1,9 @@
 # import packages
 import duckdb
-
+from typing import Dict
 
 # INSERT function
-def InsertData(data: dict[str, str, str, str], databaseName: str = "datascience"):
+def InsertData(data: Dict[str, str], databaseName: str = "datascience"):
     """
     Create DuckDB database if not exists, and create LEAVE table if not exists.
 
@@ -17,16 +17,10 @@ def InsertData(data: dict[str, str, str, str], databaseName: str = "datascience"
 
     # insert query
     query = """
-            BEGIN TRANSACTION
-            ;
-
             INSERT INTO 
                 LEAVE (CREATE_TIME, EMP_NAME, DATE, TIME, REASON)
             VALUES 
                 (CURRENT_LOCALTIMESTAMP(), '{emp_name}', DATE '{date}', '{time}', DEFAULT)
-            ;
-
-            COMMIT
             ;
             """.format(**data)
 
@@ -42,7 +36,7 @@ def InsertData(data: dict[str, str, str, str], databaseName: str = "datascience"
 
 
 # UPDATE function
-def UpdateData(data: dict[str, str, str], databaseName: str):
+def UpdateData(data: Dict[str, str], databaseName: str):
     """
     Update data if the specified leave record is no more valid.
 
@@ -87,7 +81,7 @@ def SelectData(databaseName: str) -> dict:
     """
 
     # connect to DuckDB database
-    conn = duckdb.connect(f"./DB/{databaseName}.db", read_only = True)
+    conn = duckdb.connect(f"./DB/{databaseName}.db")
 
     # select query
     query = """

@@ -1,0 +1,16 @@
+body {
+  font-family: Consolas, sans-serif, "Microsoft YaHei", "SimHei";
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.app {
+  display: flex;
+}
+
+.content {
+  flex: 1;
+  padding: 2vh 5% 2vh 5%;
+}

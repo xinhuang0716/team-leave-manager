@@ -1,0 +1,104 @@
+.Add-button {
+  margin-top: 2vh;
+  margin-bottom: 5vh;
+  width: 25%;
+  height: 50px;
+  border-radius: 5px;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+  cursor: pointer;
+}
+
+.Add-button::before {
+  content: "";
+  width: 0;
+  height: 50px;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-image: linear-gradient(
+    to right,
+    rgba(61, 145, 170) 0%,
+    rgb(255, 255, 255) 100%
+  );
+  transition: 0.5s ease;
+  display: block;
+  z-index: -1;
+}
+
+.Add-button:hover::before {
+  width: 100%;
+}
+
+.Add-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
+}
+
+.Add-modal-content {
+  position: absolute;
+  width: 50%;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 10px;
+  padding: 1%;
+  z-index: 3;
+  background-color: rgb(225, 237, 250);
+  font-family: Consolas, sans-serif, "Microsoft YaHei", "SimHei";
+}
+
+.Add-form-group {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+}
+
+.Add-form-group label {
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+
+.Add-form-group input,
+.Add-form-group select {
+  padding: 2px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.Add-form-group input:focus,
+.Add-form-group select:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.Add-submit-button {
+  padding: 5px 30px 5px 30px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.Add-submit-button:hover {
+  background-color: #0056b3;
+}

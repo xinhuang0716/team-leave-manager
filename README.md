@@ -2,19 +2,35 @@
 
 > A user-friendly Leave Management website for fellows
 
-![python-image] ![react-image] ![fastapi-image] ![vite-image] 
+![python-image] ![fastapi-image] ![vite-image] ![react-image]
 
 ## Overview
 
-Team Leave Manager is a tool designed to help teams manage and track their leave requests efficiently. It provides a user-friendly interface for submitting, approving, and tracking leave requests.
+Team Leave Manager is a tool designed to help team members manage and track their leave records efficiently. It provides a user-friendly interface for submitting, modifying, and tracking leave records.
 
-The backend is developed with python and FastAPI, the database uses Duckdb, while the fronted framework is used React.
+### Landing page
 
-## Features
+The landing page features a calendar that displays all leave records, allowing you to instantly see your teammates' schedules at a glance
 
-- Submit leave requests
-- Alter leave balances
-- View leave records
+<img src="./README_img/calendar.png" width="80%" />
+
+### Create new leave
+
+After clicking the Add Your Leave!!! button, you can enter your leave message in the pop-up window
+
+<img src="./README_img/add.png" width="80%" />
+
+### Records page
+
+The records page contains all valid leave records. To modify your leave record, simply click the delete button
+
+<img src="./README_img/records.png" width="80%" />
+
+### Backend API doc
+
+All backend API functions are described in the Swagger documentation
+
+<img src="./README_img/swagger.png" width="80%" />
 
 ## Dependencies
 
@@ -24,106 +40,93 @@ Describe any prerequisites, libraries, OS version, etc., needed before installin
 | ---------- | ------- |
 | python     | 3.10.13 |
 | virtualenv | 20.26.1 |
+| node.js    | 18.16.0 |
 
 ## Installation
 
-To install the Team Leave Manager, follow these steps:
+To install Team Leave Manager, follow these steps:
 
-1. Clone the repository :
-   ```bash
-   git clone https://github.com/xinhuang0716/team-leave-manager.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd team-leave-manager
-   ```
-3. Create virtual environment:
+- Clone the repository :
+
+  ```bash
+  git clone https://github.com/xinhuang0716/team-leave-manager.git
+  ```
+
+- Navigate to the project directory:
+  ```bash
+  cd team-leave-manager
+  ```
+
+### Backend
+
+1. Create virtual environment:
 
    ```bash
    virtualenv venv
    ```
 
-4. Activate the environment:
+2. Activate the environment:
 
    ```bash
    cd venv/Scripts
    activate
    ```
 
-5. Install the dependencies:
+3. Install the dependencies:
    ```bash
    pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --default-timeout=1000 -r ./requirements.txt
    ```
 
-## Usage example
+### Frontend
 
-After activate `venv` environment, run the following script to launch backend server:
+1. Intall Node.js modules:
+
+   ```bash
+   cd team-leave-manager
+   npm install
+   ```
+
+## Usage
+
+After activate `venv` environment, run the following script to launch `backend` server:
 
 ```bash
 cd team-leave-manager
 uvicorn server:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Open your browser and navigate to `http://localhost:8000` to access the application.
-
-To check the Swagger API UI, go to `http://localhost:8000/docs`.
-
-#### 0. Initiate Database (for different department)
+And run the following script to launch `frontend` server:
 
 ```bash
-curl -X 'POST' \
-  'http://localhost:8000/init/test' \
-  -H 'accept: application/json' \
-  -d ''
+cd team-leave-manager
+npm run dev
 ```
 
-#### 1. Submit leave requests
+Next, you can view the Team Leave Manager web app at `http://localhost:5173/`.`
 
-```bash
-curl -X 'POST' \
-  'http://localhost:8000/add/test' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "emp_name": "PERSON 1",
-  "date": "2025-09-09",
-  "time": "AM",
-  "reason": "Sick leave"
-}'
-```
+To access the backend, use `http://localhost:8000`
 
-#### 2. Alter leave balances
-
-```bash
-curl -X 'POST' \
-  'http://localhost:8000/change/test' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-  "emp_name": "PERSON 1",
-  "date": "2025-09-09",
-  "time": "AM"
-}'
-```
-
-#### 3. View leave records
-
-```bash
-curl -X 'GET' \
-  'http://localhost:8000/fetch/test' \
-  -H 'accept: application/json'
-```
+For the Swagger API UI, visit `http://localhost:8000/docs`.`
 
 ## Release History
 
 - 0.1
-  - Complete the backend CRUD API prototype
-- 0.2
-  - Working in progress
+  - It's a beta release, still need to polish
+
+## TO-DO
+
+|To-do list|
+|-|
+|UI design still need to polish|
+|The frontend structure and coding style should be more organized|
+|Backend optimization (e.g., I/O performance, session stability, etc.)|
+|RWD|
+|Authentication (Optional)|
 
 ## Contributing
 
-We welcome contributions! Please read our [Contributing Guidelines](CONTRIBUTING.md) for more information.
+- tom.h.huang
+- jason.hp.hsu
 
 ## Contact
 
