@@ -38,9 +38,9 @@ Describe any prerequisites, libraries, OS version, etc., needed before installin
 
 |            | versoin |
 | ---------- | ------- |
-| python     | 3.10.13 |
-| virtualenv | 20.26.1 |
-| node.js    | 18.16.0 |
+| python     | 3.11.9  |
+| virtualenv | 20.29.3 |
+| node.js    | 22.14.0 |
 
 ## Installation
 
