@@ -122,6 +122,7 @@ For the Swagger API UI, visit `http://localhost:8000/docs`.`
 |Backend optimization (e.g., I/O performance, session stability, etc.)|
 |RWD|
 |Authentication (Optional)|
+|Log record|
 
 ## Contributing
 
