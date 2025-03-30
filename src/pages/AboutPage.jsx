@@ -31,7 +31,7 @@ function AboutPage() {
           <p>2. Use Records page to view or delete the leave records</p>
           <p>3. Click Add-Leave-botton on Calendar page to create new leave</p>
           <p>
-            4. For further elasbration, refer to the README file in
+            4. For further elaboration, refer to the README file in
             team-leave-manager repo
           </p>
         </section>
