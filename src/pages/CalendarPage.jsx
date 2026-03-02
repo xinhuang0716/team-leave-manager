@@ -1,6 +1,6 @@
-import React from 'react';
-import Calendar from '../components/Calendar';
-import Add from '../components/Add';
+import React from "react";
+import Calendar from "../components/Calendar";
+import Add from "../components/Add";
 
 const CalendarPage = () => (
   <>

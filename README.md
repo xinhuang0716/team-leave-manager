@@ -1,50 +1,50 @@
 # Team Leave Manager
 
-> A user-friendly Leave Management website for fellows
+> A user-friendly Leave Management website for team members to manage and track their leave records efficiently.
 
-![python-image] ![fastapi-image] ![vite-image] ![react-image]
+![python-image] ![duckdb-image] ![fastapi-image] ![react-image] ![vite-image]
 
 ## Overview
 
-Team Leave Manager is a tool designed to help team members manage and track their leave records efficiently. It provides a user-friendly interface for submitting, modifying, and tracking leave records.
+Team Leave Manager is a tool designed to help teams manage their leave records effectively. It provides a user-friendly interface for team members to create, view, and manage their leave records. The application is built using FastAPI for the backend and React for the frontend, with DuckDB as the database.
 
 ### Landing page
 
-The landing page features a calendar that displays all leave records, allowing you to instantly see your teammates' schedules at a glance
+The landing page features a calendar that displays all leave records, allowing users to easily visualize their leave schedule and plan accordingly.
 
 <img src="./README_img/calendar.png" width="80%" />
 
 ### Create new leave
 
-After clicking the Add Your Leave!!! button, you can enter your leave message in the pop-up window
+Users can create a new leave record by filling out the form with the necessary details, such as leave type, start date, end date, and reason for leave. Once submitted, the new leave record will be added to the calendar and records page.
 
 <img src="./README_img/add.png" width="80%" />
 
 ### Records page
 
-The records page contains all valid leave records. To modify your leave record, simply click the delete button
+The records page provides a comprehensive view of all leave records, allowing users to filter and search for specific records based on various criteria such as date range, leave type, and status. This page also allows users to edit or delete existing leave records as needed.
 
 <img src="./README_img/records.png" width="80%" />
 
 ### Backend API doc
 
-All backend API functions are described in the Swagger documentation
+FastAPI automatically generates interactive API documentation using Swagger UI. This allows developers to easily explore and test the API endpoints, making it easier to understand how to interact with the backend services.
 
 <img src="./README_img/swagger.png" width="80%" />
 
-## Dependencies
+## Prerequisites
 
-Describe any prerequisites, libraries, OS version, etc., needed before installing program.
+Make sure you have the following software with the specified versions or higher version installed on your machine:
 
-|            | versoin |
-| ---------- | ------- |
-| python     | 3.11.9  |
-| virtualenv | 20.29.3 |
-| node.js    | 22.14.0 |
+|         | versoin |
+| ------- | ------- |
+| python  | 3.12.10 |
+| uv      | 0.9.17 |
+| node.js | 24.12.0 |
 
 ## Installation
 
-To install Team Leave Manager, follow these steps:
+To set up the project locally, follow these steps:
 
 - Clone the repository :
 
@@ -52,47 +52,31 @@ To install Team Leave Manager, follow these steps:
   git clone https://github.com/xinhuang0716/team-leave-manager.git
   ```
 
-- Navigate to the project directory:
-  ```bash
-  cd team-leave-manager
-  ```
+- Frontend
 
-### Backend
+   - Install Node.js modules:
 
-1. Create virtual environment:
+      ```bash
+      cd team-leave-manager
+      npm install
+      ```
 
-   ```bash
-   virtualenv venv
-   ```
+- Backend
 
-2. Activate the environment:
+   - Create virtual environment & install Python dependencies:
 
-   ```bash
-   cd venv/Scripts
-   activate
-   ```
-
-3. Install the dependencies:
-   ```bash
-   pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host files.pythonhosted.org --default-timeout=1000 -r ./requirements.txt
-   ```
-
-### Frontend
-
-1. Intall Node.js modules:
-
-   ```bash
-   cd team-leave-manager
-   npm install
-   ```
+      ```bash
+      cd team-leave-manager/backend
+      uv sync
+      ```
 
 ## Usage
 
-After activate `venv` environment, run the following script to launch `backend` server:
+Use the following script to launch `backend` server:
 
 ```bash
-cd team-leave-manager
-uvicorn server:app --reload --host 0.0.0.0 --port 8000
+cd team-leave-manager/backend
+uv run main.py
 ```
 
 And run the following script to launch `frontend` server:
@@ -102,27 +86,21 @@ cd team-leave-manager
 npm run dev
 ```
 
-Next, you can view the Team Leave Manager web app at `http://localhost:5173/`.`
+Now, you can browse the frontend at `http://localhost:5173`. The frontend will make API calls to the backend server to fetch and manage leave records.
 
-To access the backend, use `http://localhost:8000`
-
-For the Swagger API UI, visit `http://localhost:8000/docs`.`
+To access the API documentation, navigate to `http://localhost:8000/docs` in your web browser. This will open the Swagger UI, where you can explore and test the available API endpoints.
 
 ## Release History
 
 - 0.1
-  - It's a beta release, still need to polish
+  - It's a beta release, still need to polish.
+- 0.2
+  - Refactor the code structure and polish the UI design. Also fix some bugs while data streamlining the backend logic.
 
 ## TO-DO
 
-|To-do list|
-|-|
-|UI design still need to polish|
-|The frontend structure and coding style should be more organized|
-|Backend optimization (e.g., I/O performance, session stability, etc.)|
-|RWD|
-|Authentication (Optional)|
-|Log record|
+- Authentication (Optional)
+- Log record
 
 ## Contributing
 
@@ -136,8 +114,8 @@ Shall you have any problem, please let me knows. Look forward to your feedbacks 
 ```
 Name:  HSIN, HUANG
 Email: tom.h.huang@fubon.com
-Tel:   02-6608-0879 #69190
-Dept:  證券 數據科學部 資料服務處(5F)
+Tel:   02-6608-0879 #69175
+Dept:  證券 數據科學部 模型建置科(5F)
 ```
 
 <!-- Markdown link & img dfn's -->
@@ -146,4 +124,4 @@ Dept:  證券 數據科學部 資料服務處(5F)
 [react-image]: https://shields.io/badge/react-black?logo=react&style=for-the-badge
 [fastapi-image]: https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi
 [vite-image]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=Vite&logoColor=white
-[duckdb-image]: https://img.shields.io/badge/Duckdb-_-blue
+[duckdb-image]: https://img.shields.io/badge/Duckdb-000000?style=for-the-badge&logo=Duckdb&logoColor=yellow

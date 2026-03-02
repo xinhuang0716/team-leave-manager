@@ -1,11 +1,11 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GlobalStyle from './GlobalStyle';
-import { LeaveProvider } from './contexts/LeaveContext';
-import MainLayout from './layouts/MainLayout';
-import CalendarPage from './pages/CalendarPage';
-import RecordsPage from './pages/RecordsPage';
-import AboutPage from './pages/AboutPage';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import GlobalStyle from "./GlobalStyle";
+import { LeaveProvider } from "./contexts/LeaveContext";
+import MainLayout from "./layouts/MainLayout";
+import CalendarPage from "./pages/CalendarPage";
+import RecordsPage from "./pages/RecordsPage";
+import AboutPage from "./pages/AboutPage";
 
 const App = () => (
   <>

@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
-import styled from 'styled-components';
-import { format, addDays, startOfWeek } from 'date-fns';
-import { useLeaves } from '../hooks/useLeaves';
+import React, { useMemo } from "react";
+import styled from "styled-components";
+import { format, addDays, startOfWeek } from "date-fns";
+import { useLeaves } from "../hooks/useLeaves";
 
 const Wrapper = styled.div`
   overflow-x: auto;
@@ -11,31 +11,55 @@ const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 2px;
-  max-height: 76vh;
+  max-height: 80vh;
   overflow-y: auto;
   min-width: 700px;
 `;
 
 const DayCell = styled.div`
   padding: 10px;
-  background-color: rgb(225, 237, 250);
-  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(70, 135, 209, 0.08);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
 `;
 
 const DaySlot = styled.div`
   padding: 8px;
-  background-color: rgb(70, 135, 209);
+  background: linear-gradient(135deg, rgb(70, 135, 209) 0%, #5a9de6 100%);
   text-align: center;
-  font-weight: bold;
-  border-radius: 5px;
-  color: whitesmoke;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  color: white;
+  box-shadow: 0 2px 8px rgba(70, 135, 209, 0.3);
+  font-size: 1rem;
+  letter-spacing: 0.5px;
 `;
 
 const TimeSlot = styled.div`
-  padding: 2px;
-  margin-top: 10px;
-  border-radius: 5px;
+  padding: 4px 6px;
+  margin-top: 8px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+
+  strong {
+    color: var(--accent-blue);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    margin-right: 4px;
+  }
+
+  span {
+    color: var(--text-secondary);
+  }
 `;
 
 const HeaderCell = styled.div`
@@ -51,7 +75,7 @@ const HeaderCell = styled.div`
   text-shadow: 2px 2px black;
 `;
 
-const DAYS_OF_WEEK = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+const DAYS_OF_WEEK = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
 const TOTAL_CELLS = 35;
 
 const Calendar = () => {
@@ -85,24 +109,28 @@ const Calendar = () => {
 
         {Array.from({ length: TOTAL_CELLS }, (_, i) => {
           const date = addDays(startDate, i);
-          const formatted = format(date, 'yyyy-MM-dd');
+          const formatted = format(date, "yyyy-MM-dd");
           const am = calendarData[`${formatted}-AM`] || [];
           const pm = calendarData[`${formatted}-PM`] || [];
 
           return (
             <DayCell key={i}>
-              <DaySlot>{format(date, 'M/d')}</DaySlot>
+              <DaySlot>{format(date, "M/d")}</DaySlot>
               <TimeSlot>
-                <strong style={{ visibility: am.length ? 'visible' : 'hidden' }}>
-                  AM{' '}
+                <strong
+                  style={{ visibility: am.length ? "visible" : "hidden" }}
+                >
+                  AM{" "}
                 </strong>
-                <span>{am.sort().join(' ')}</span>
+                <span>{am.sort().join(" ")}</span>
               </TimeSlot>
               <TimeSlot>
-                <strong style={{ visibility: pm.length ? 'visible' : 'hidden' }}>
-                  PM{' '}
+                <strong
+                  style={{ visibility: pm.length ? "visible" : "hidden" }}
+                >
+                  PM{" "}
                 </strong>
-                <span>{pm.sort().join(' ')}</span>
+                <span>{pm.sort().join(" ")}</span>
               </TimeSlot>
             </DayCell>
           );

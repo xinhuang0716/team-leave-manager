@@ -1,10 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { LeaveContext } from './leaveContextValue';
+import React, { useState, useCallback, useEffect } from "react";
+import { LeaveContext } from "./leaveContextValue";
 import {
   fetchLeaves as apiFetchLeaves,
   addLeave as apiAddLeave,
   deleteLeave as apiDeleteLeave,
-} from '../api/leaves';
+} from "../api/leaves";
 
 export const LeaveProvider = ({ children }) => {
   const [leaves, setLeaves] = useState([]);
@@ -19,7 +19,7 @@ export const LeaveProvider = ({ children }) => {
       setError(null);
     } catch (err) {
       setError(err);
-      console.error('Error fetching leaves:', err);
+      console.error("Error fetching leaves:", err);
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,9 @@ export const LeaveProvider = ({ children }) => {
   }, [refresh]);
 
   return (
-    <LeaveContext.Provider value={{ leaves, loading, error, addLeave, deleteLeave, refresh }}>
+    <LeaveContext.Provider
+      value={{ leaves, loading, error, addLeave, deleteLeave, refresh }}
+    >
       {children}
     </LeaveContext.Provider>
   );

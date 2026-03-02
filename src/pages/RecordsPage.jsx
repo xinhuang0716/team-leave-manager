@@ -1,12 +1,26 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useLeaves } from '../hooks/useLeaves';
-import RecordList from '../components/RecordList';
+import React from "react";
+import styled from "styled-components";
+import { useLeaves } from "../hooks/useLeaves";
+import RecordList from "../components/RecordList";
 
 const PageContainer = styled.div`
-  background: radial-gradient(circle, #abccf1, #ffffff);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(171, 204, 241, 0.3) 100%
+  );
   height: 96vh;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+`;
+
+const LoadingText = styled.p`
+  text-align: center;
+  padding: 48px;
+  color: var(--text-secondary);
 `;
 
 const RecordsPage = () => {
@@ -19,11 +33,11 @@ const RecordsPage = () => {
     if (!confirmed) return;
 
     deleteLeave(emp_name, date, time).catch(() => {
-      alert('Failed to delete the record. Please try again.');
+      alert("Failed to delete the record. Please try again.");
     });
   };
 
-  if (loading && !leaves.length) return <p>Loading…</p>;
+  if (loading && !leaves.length) return <LoadingText>Loading…</LoadingText>;
 
   return (
     <PageContainer>

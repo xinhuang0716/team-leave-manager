@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const TableContainer = styled.div`
   overflow-x: auto;
@@ -9,7 +9,8 @@ const TableContainer = styled.div`
 
 const Table = styled.table`
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   text-align: center;
   table-layout: fixed;
 
@@ -26,32 +27,51 @@ const THead = styled.thead`
 `;
 
 const Th = styled.th`
-  padding: 1% 3%;
+  padding: 14px 16px;
   text-align: center;
   vertical-align: middle;
-  height: 30px;
-  background: #2e4661;
+  background: linear-gradient(135deg, #2e4661 0%, #3a5a7c 100%);
   color: #ffffff;
-  font-size: large;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+
+  &:first-child {
+    border-radius: var(--radius-md) 0 0 0;
+  }
+
+  &:last-child {
+    border-radius: 0 var(--radius-md) 0 0;
+  }
 `;
 
 const Td = styled.td`
-  padding: 1% 3%;
+  padding: 12px 16px;
   text-align: center;
   vertical-align: middle;
-  height: 30px;
+  font-size: 1rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(46, 70, 97, 0.06);
 `;
 
 const Tr = styled.tr`
+  transition: all var(--transition-fast);
+
   &:nth-child(even) {
-    background-color: #9bbdf046;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background-color: rgba(155, 189, 240, 0.08);
   }
 
   &:hover {
-    background-color: #d1d0d0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background-color: rgba(70, 135, 209, 0.08);
+  }
+
+  &:last-child td:first-child {
+    border-radius: 0 0 0 var(--radius-md);
+  }
+
+  &:last-child td:last-child {
+    border-radius: 0 0 var(--radius-md) 0;
   }
 `;
 
@@ -59,19 +79,32 @@ const DeleteButton = styled.button`
   border: none;
   background: none;
   cursor: pointer;
-  padding: 4px;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+  opacity: 0.6;
 
   &:hover {
-    transform: scale(1.2);
+    transform: scale(1.15);
+    opacity: 1;
+    background: rgba(220, 53, 69, 0.08);
   }
 
   img {
-    height: 35px;
+    height: 28px;
+    display: block;
   }
 `;
 
+const EmptyState = styled.p`
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-secondary);
+  font-size: 1rem;
+`;
+
 const RecordList = ({ records, onDelete }) => {
-  if (!records?.length) return <p>No records found.</p>;
+  if (!records?.length) return <EmptyState>No records found.</EmptyState>;
 
   return (
     <TableContainer>

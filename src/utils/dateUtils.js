@@ -17,28 +17,28 @@ export const generateLeavePayloads = (formData) => {
   const endDate = new Date(data.end_date);
 
   if (startDate < today) {
-    throw new Error('請假起日需大於或等於今日');
+    throw new Error("請假起日需大於或等於今日");
   }
 
   if (startDate > endDate) {
-    throw new Error('請假起日需小於或等於請假迄日');
+    throw new Error("請假起日需小於或等於請假迄日");
   }
 
   const payloadList = [];
   const iterDate = new Date(startDate);
 
   while (iterDate <= endDate) {
-    const dateStr = iterDate.toISOString().split('T')[0];
-    payloadList.push({ emp_name: data.emp_name, date: dateStr, time: 'AM' });
-    payloadList.push({ emp_name: data.emp_name, date: dateStr, time: 'PM' });
+    const dateStr = iterDate.toISOString().split("T")[0];
+    payloadList.push({ emp_name: data.emp_name, date: dateStr, time: "AM" });
+    payloadList.push({ emp_name: data.emp_name, date: dateStr, time: "PM" });
     iterDate.setDate(iterDate.getDate() + 1);
   }
 
-  if (data.start_time === 'PM') {
+  if (data.start_time === "PM") {
     payloadList.shift();
   }
 
-  if (data.end_time === 'AM') {
+  if (data.end_time === "AM") {
     payloadList.pop();
   }
 
