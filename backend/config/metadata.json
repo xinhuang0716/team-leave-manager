@@ -1,0 +1,26 @@
+{
+    "title": "Team Leave Manager API",
+    "description": "A RESTful API built with **FastAPI** for managing team leave records.\n\n---\n\n### Quick Start\n\nVisit `/docs` for the interactive Swagger UI, or `/redoc` for the ReDoc documentation.",
+    "version": "1.0.2",
+    "contact": {
+        "name": "Team Leave Manager"
+    },
+    "openapi_tags": [
+        {
+            "name": "Root",
+            "description": "Health check and entry point for the API."
+        },
+        {
+            "name": "Create New Record",
+            "description": "Add a new leave record for a team member.\n\n**Required fields:**\n\n| Field | Type | Example | Notes |\n|-------|------|---------|-------|\n| `emp_name` | `string` | `\"John\"` | Employee name |\n| `date` | `string` | `\"2025-12-31\"` | Format: `YYYY-MM-DD` |\n| `time` | `string` | `\"AM\"` | Must be `AM` or `PM` |\n| `reason` | `string` | `\"Medical\"` | Optional |"
+        },
+        {
+            "name": "Change Record from Valid to Invalid",
+            "description": "Soft-delete a leave record by marking it as **invalid**.\n\nProvide the identifying fields of the record you wish to invalidate. This operation is non-destructive — the record remains in the database but will no longer appear in active queries."
+        },
+        {
+            "name": "Retrieve All Valid Records",
+            "description": "Fetch all currently **valid** leave records.\n\nResults are sorted in the following order:\n1. `date` — ascending\n2. `time` — AM before PM\n3. `emp_name` — alphabetically"
+        }
+    ]
+}

@@ -1,16 +1,37 @@
-# import package
+from datetime import date, datetime
+from typing import Literal
 from pydantic import BaseModel
-from typing import Optional
 
-# class model for InsertData
+
+# Request models
 class InsertModel(BaseModel):
     emp_name: str
-    date: str
-    time: str
-    reason: Optional[str] = None
+    date: date
+    time: Literal["AM", "PM"]
+    reason: str | None = None
 
-# class model for UpdateDatas
+
 class UpdateModel(BaseModel):
     emp_name: str
-    date: str
-    time: str
+    date: date
+    time: Literal["AM", "PM"]
+
+
+# Response models
+class MessageResponse(BaseModel):
+    message: str
+
+
+class LeaveRecord(BaseModel):
+    IDX: int
+    CREATE_TIME: datetime
+    DELETE_TIME: str
+    EMP_NAME: str
+    DATE: date
+    TIME: str
+    REASON: str | None = None
+
+
+class FetchResponse(BaseModel):
+    status: str
+    data: list[LeaveRecord]

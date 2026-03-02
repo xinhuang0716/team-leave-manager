@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { format, addDays, startOfWeek } from "date-fns";
+import React, { useMemo } from 'react';
+import styled from 'styled-components';
+import { format, addDays, startOfWeek } from 'date-fns';
+import { useLeaves } from '../hooks/useLeaves';
 
-const CalendarContainer = styled.div`
+const Wrapper = styled.div`
+  overflow-x: auto;
+`;
+
+const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 2px;
   max-height: 76vh;
   overflow-y: auto;
+  min-width: 700px;
 `;
 
 const DayCell = styled.div`
@@ -18,13 +24,12 @@ const DayCell = styled.div`
 
 const DaySlot = styled.div`
   padding: 8px;
-  background-color:rgb(70, 135, 209);
+  background-color: rgb(70, 135, 209);
   text-align: center;
   font-weight: bold;
   border-radius: 5px;
   color: whitesmoke;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-  }
 `;
 
 const TimeSlot = styled.div`
@@ -41,83 +46,69 @@ const HeaderCell = styled.div`
   font-family: cursive;
   letter-spacing: -0.15ch;
   line-height: 0.9;
-  color:rgb(252, 215, 252);
+  color: rgb(252, 215, 252);
   -webkit-text-stroke: 3px black;
   text-shadow: 2px 2px black;
 `;
 
+const DAYS_OF_WEEK = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
+const TOTAL_CELLS = 35;
+
 const Calendar = () => {
-  const [data, setData] = useState({});
+  const { leaves, loading } = useLeaves();
 
-  useEffect(() => {
-    fetch("http://localhost:8000/fetch/ds")
-      .then((response) => response.json())
-      .then((data) => {
-        const formattedData = data["data"].reduce((acc, item) => {
-          const key = `${item.DATE}-${item.TIME}`;
-          if (!acc[key]) {
-            acc[key] = [];
-          }
-          acc[key].push(item.EMP_NAME);
-          return acc;
-        }, {});
-        setData(formattedData);
-      })
-      .catch((error) => {
-        console.log("Error fetching data:", error);
-      });
-  }, []);
+  // Transform flat leave array into a lookup map: "YYYY-MM-DD-AM/PM" -> [names]
+  const calendarData = useMemo(() => {
+    if (!leaves?.length) return {};
 
-  const renderHeader = () => {
-    const daysOfWeek = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-    return daysOfWeek.map((day, index) => (
-      <HeaderCell key={index}>{day}</HeaderCell>
-    ));
-  };
+    return leaves.reduce((acc, item) => {
+      const key = `${item.DATE}-${item.TIME}`;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(item.EMP_NAME);
+      return acc;
+    }, {});
+  }, [leaves]);
 
-  const renderDays = () => {
-    const days = [];
-    const startDate = startOfWeek(new Date(), { weekStartsOn: 1 }); // Start from Monday
-    for (let i = 0; i < 35; i++) {
-      const date = addDays(startDate, i);
-      const formattedDate = format(date, "yyyy-MM-dd");
-      const morningData = data[`${formattedDate}-AM`] || [];
-      const afternoonData = data[`${formattedDate}-PM`] || [];
+  const startDate = useMemo(
+    () => startOfWeek(new Date(), { weekStartsOn: 1 }),
+    [],
+  );
 
-      days.push(
-        <DayCell key={i}>
-          <DaySlot>{format(date, "M/d")}</DaySlot>
-          <TimeSlot>
-            <strong
-              style={{
-                visibility: morningData.length > 0 ? "visible" : "hidden",
-              }}
-            >
-              AM{" "}
-            </strong>
-            <span>{morningData.sort().join(" ")}</span>
-          </TimeSlot>
-          <TimeSlot>
-            <strong
-              style={{
-                visibility: afternoonData.length > 0 ? "visible" : "hidden",
-              }}
-            >
-              PM{" "}
-            </strong>
-            <span>{afternoonData.sort().join(" ")}</span>
-          </TimeSlot>
-        </DayCell>
-      );
-    }
-    return days;
-  };
+  if (loading && !leaves.length) return <p>Loading calendar…</p>;
 
   return (
-    <CalendarContainer>
-      {renderHeader()}
-      {renderDays()}
-    </CalendarContainer>
+    <Wrapper>
+      <Grid>
+        {DAYS_OF_WEEK.map((day) => (
+          <HeaderCell key={day}>{day}</HeaderCell>
+        ))}
+
+        {Array.from({ length: TOTAL_CELLS }, (_, i) => {
+          const date = addDays(startDate, i);
+          const formatted = format(date, 'yyyy-MM-dd');
+          const am = calendarData[`${formatted}-AM`] || [];
+          const pm = calendarData[`${formatted}-PM`] || [];
+
+          return (
+            <DayCell key={i}>
+              <DaySlot>{format(date, 'M/d')}</DaySlot>
+              <TimeSlot>
+                <strong style={{ visibility: am.length ? 'visible' : 'hidden' }}>
+                  AM{' '}
+                </strong>
+                <span>{am.sort().join(' ')}</span>
+              </TimeSlot>
+              <TimeSlot>
+                <strong style={{ visibility: pm.length ? 'visible' : 'hidden' }}>
+                  PM{' '}
+                </strong>
+                <span>{pm.sort().join(' ')}</span>
+              </TimeSlot>
+            </DayCell>
+          );
+        })}
+      </Grid>
+    </Wrapper>
   );
 };
 

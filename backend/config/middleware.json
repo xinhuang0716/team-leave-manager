@@ -1,0 +1,6 @@
+{
+    "allow_origins": ["*"],
+    "allow_credentials": false,
+    "allow_methods": ["*"],
+    "allow_headers": ["*"]
+}

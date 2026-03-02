@@ -1,112 +1,65 @@
-# import packages
 import duckdb
-from typing import Dict
 
-# INSERT function
-def InsertData(data: Dict[str, str], databaseName: str = "datascience"):
+
+def insertData(data: dict) -> None:
+    """Insert a new leave record.
+
+    Args:
+        data: Must contain `emp_name`, `date` and `time`, while `reason` is optional.
     """
-    Create DuckDB database if not exists, and create LEAVE table if not exists.
-
-    [Args]
-        databaseName (str): Connect to this database
-        data (dict): Must contain "emp_name", "date" and "time", "reason" is optional
-    """
-
-    # connect to DuckDB database
-    conn = duckdb.connect(f"./DB/{databaseName}.db")
-
-    # insert query
-    query = """
-            INSERT INTO 
-                LEAVE (CREATE_TIME, EMP_NAME, DATE, TIME, REASON)
-            VALUES 
-                (CURRENT_LOCALTIMESTAMP(), '{emp_name}', DATE '{date}', '{time}', DEFAULT)
-            ;
-            """.format(**data)
-
-    # insert data
-    conn.sql(
-        query
-        if "reason" not in data
-        else query.replace("DEFAULT", "'{reason}'".format(**data))
+    conn = duckdb.connect("./DB/leave.db")
+    conn.execute(
+        """
+        INSERT INTO LEAVE (CREATE_TIME, EMP_NAME, DATE, TIME, REASON)
+        VALUES (CURRENT_LOCALTIMESTAMP(), ?, ?::DATE, ?, ?)
+        """,
+        [data["emp_name"], data["date"], data["time"], data.get("reason")]
     )
-
-    # disconnection
     conn.close()
 
 
-# UPDATE function
-def UpdateData(data: Dict[str, str], databaseName: str):
-    """
-    Update data if the specified leave record is no more valid.
+def updateData(data: dict) -> None:
+    """Soft-delete a leave record by stamping DELETE_TIME.
 
-    [Args]
-        databaseName (str): Connect to this database
-        data (dict): Must contain "emp_name", "date" and "time"
+    Args:
+        data: Must contain `emp_name`, `date`, `time`.
     """
 
-    # connect to DuckDB database
-    conn = duckdb.connect(f"./DB/{databaseName}.db")
-
-    # update query
-    query = """
-            BEGIN TRANSACTION
-            ;
-            UPDATE LEAVE
-                SET DELETE_TIME = STRFTIME(CURRENT_LOCALTIMESTAMP(), '%Y-%m-%d %H:%M:%S')
-                WHERE EMP_NAME = '{emp_name}'
-                      AND DATE = DATE '{date}'
-                      AND TIME = '{time}'
-                      AND DELETE_TIME = 'N'
-            ;
-
-            COMMIT
-            ;
-            """.format(**data)
-
-    # insert data
-    conn.sql(query)
-
-    # disconnection
+    conn = duckdb.connect("./DB/leave.db")
+    conn.execute(
+        """
+        UPDATE LEAVE
+        SET DELETE_TIME = STRFTIME(CURRENT_LOCALTIMESTAMP(), '%Y-%m-%d %H:%M:%S')
+        WHERE
+            EMP_NAME = ?
+            AND DATE = ?::DATE
+            AND TIME = ?
+            AND DELETE_TIME = 'N'
+        """,
+        [data["emp_name"], data["date"], data["time"]]
+    )
     conn.close()
 
 
-# SELECT function
-def SelectData(databaseName: str) -> dict:
-    """
-    Select all valid leave record from LEAVE table.
+def selectData() -> dict:
+    """Return all valid (non-deleted) leave records from today onward."""
 
-    [Args]
-        databaseName (str): Connect to this database
-    """
-
-    # connect to DuckDB database
-    conn = duckdb.connect(f"./DB/{databaseName}.db")
-
-    # select query
-    query = """
-            SELECT 
-                *
-            FROM
-                LEAVE
-            WHERE
-                DATE >= current_date  -- filter by date
-                AND DELETE_TIME = 'N' -- valid record
-            ORDER BY
-                DATE,
-                TIME,
-                EMP_NAME
-            ;
-            """
-
-    # data preprocessing
-    data = conn.sql(query).fetchall()
-    result = {"status": "success",
-              "data": [dict(zip(["IDX", "CREATE_TIME", "DELETE_TIME", "EMP_NAME", "DATE", "TIME", "REASON"],
-                                [idx] + list(values))
-                            ) for idx, values in enumerate(data)]}
-
-    # disconnection
+    conn = duckdb.connect("./DB/leave.db")
+    data = conn.execute(
+        """
+        SELECT
+            CREATE_TIME, DELETE_TIME, EMP_NAME, DATE, TIME, REASON
+        FROM
+            LEAVE
+        WHERE
+            DATE >= current_date AND DELETE_TIME = 'N'
+        ORDER BY
+            DATE, TIME, EMP_NAME
+        """
+    ).fetchall()
     conn.close()
 
-    return result
+    return {
+        "status": "success",
+        "data": [{"IDX": idx, **dict(zip(["CREATE_TIME", "DELETE_TIME", "EMP_NAME", "DATE", "TIME", "REASON"], row))} for idx, row in enumerate(data)]
+    }

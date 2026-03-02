@@ -1,14 +1,12 @@
-import React from "react";
-import Calendar from "../components/Calendar";
-import Add from "../components/Add";
+import React from 'react';
+import Calendar from '../components/Calendar';
+import Add from '../components/Add';
 
-function CalendarPage() {
-  return (
-    <div>
-      <Add />
-      <Calendar />
-    </div>
-  );
-}
+const CalendarPage = () => (
+  <>
+    <Add />
+    <Calendar />
+  </>
+);
 
 export default CalendarPage;
