@@ -67,7 +67,7 @@ const HeaderCell = styled.div`
   text-align: center;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
   font-weight: 700;
-  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  font-size: clamp(0.95rem, 3.5vw, 1.8rem);
   letter-spacing: -0.03em;
   line-height: 1;
   color: rgb(252, 215, 252);
