@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 2px;
+    font-size: clamp(1.1rem, 4.5vw, 2.2rem);
   max-height: 80vh;
   overflow-y: auto;
   min-width: 700px;
@@ -35,7 +35,7 @@ const DaySlot = styled.div`
   background: linear-gradient(135deg, rgb(70, 135, 209) 0%, #5a9de6 100%);
   text-align: center;
   font-weight: 600;
-  border-radius: var(--radius-sm);
+      font-size: clamp(1rem, 6.5vw, 1.6rem);
   color: white;
   box-shadow: 0 2px 8px rgba(70, 135, 209, 0.3);
   font-size: 1rem;
@@ -65,14 +65,39 @@ const TimeSlot = styled.div`
 const HeaderCell = styled.div`
   padding: 10px;
   text-align: center;
-  font-size: calc(1rem + min(30px, 5vw));
-  font-weight: bold;
-  font-family: cursive;
-  letter-spacing: -0.15ch;
-  line-height: 0.9;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1;
   color: rgb(252, 215, 252);
-  -webkit-text-stroke: 3px black;
-  text-shadow: 2px 2px black;
+
+  /* Improve consistency of font rendering across platforms */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Smaller stroke that looks acceptable on most screens */
+  -webkit-text-stroke: 1.5px rgba(0,0,0,0.95);
+
+  /* Provide a cross-browser fallback that approximates an outline */
+  text-shadow:
+    0.5px 0.5px 0 rgba(0,0,0,0.9),
+    -0.5px 0.5px 0 rgba(0,0,0,0.9),
+    0.5px -0.5px 0 rgba(0,0,0,0.9),
+    -0.5px -0.5px 0 rgba(0,0,0,0.9);
+
+  /* Prevent awkward wrapping or clipping in small header cells */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 420px) {
+    font-size: clamp(0.85rem, 5.5vw, 1.2rem);
+    -webkit-text-stroke: 1px rgba(0,0,0,0.9);
+    text-shadow:
+      0.3px 0.3px 0 rgba(0,0,0,0.9),
+      -0.3px 0.3px 0 rgba(0,0,0,0.9);
+  }
 `;
 
 const DAYS_OF_WEEK = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
