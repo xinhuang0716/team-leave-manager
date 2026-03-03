@@ -28,7 +28,7 @@ const Title = styled.h2`
   margin: 0 0 32px 0;
   color: rgb(252, 215, 252);
   white-space: nowrap;
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 1px;
   position: relative;
