@@ -1,4 +1,13 @@
+import os
+from functools import cache
 import duckdb
+
+
+@cache
+def __get_db_path() -> str:
+    """Get cached database path from environment variable."""
+       
+    return os.path.join(os.getenv("DB_PATH", "./DB"), "leave.db")
 
 
 def insertData(data: dict) -> None:
@@ -7,7 +16,9 @@ def insertData(data: dict) -> None:
     Args:
         data: Must contain `emp_name`, `date` and `time`, while `reason` is optional.
     """
-    conn = duckdb.connect("./DB/leave.db")
+
+    conn = duckdb.connect(__get_db_path())
+
     conn.execute(
         """
         INSERT INTO LEAVE (CREATE_TIME, EMP_NAME, DATE, TIME, REASON)
@@ -15,6 +26,7 @@ def insertData(data: dict) -> None:
         """,
         [data["emp_name"], data["date"], data["time"], data.get("reason")]
     )
+
     conn.close()
 
 
@@ -25,7 +37,8 @@ def updateData(data: dict) -> None:
         data: Must contain `emp_name`, `date`, `time`.
     """
 
-    conn = duckdb.connect("./DB/leave.db")
+    conn = duckdb.connect(__get_db_path())
+
     conn.execute(
         """
         UPDATE LEAVE
@@ -38,13 +51,15 @@ def updateData(data: dict) -> None:
         """,
         [data["emp_name"], data["date"], data["time"]]
     )
+
     conn.close()
 
 
 def selectData() -> dict:
     """Return all valid (non-deleted) leave records from today onward."""
 
-    conn = duckdb.connect("./DB/leave.db")
+    conn = duckdb.connect(__get_db_path())
+
     data = conn.execute(
         """
         SELECT
@@ -57,6 +72,7 @@ def selectData() -> dict:
             DATE, TIME, EMP_NAME
         """
     ).fetchall()
+
     conn.close()
 
     return {
