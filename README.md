@@ -16,13 +16,13 @@ The landing page features a calendar that displays all leave records, allowing u
 
 ### Create new leave
 
-Users can create a new leave record by filling out the form with the necessary details, such as leave type, start date, end date, and reason for leave. Once submitted, the new leave record will be added to the calendar and records page.
+Users can create a new leave record by filling out the form with the necessary details, such as start date, end date, and reason for leave. Once submitted, the new leave record will be added to the calendar and records page.
 
 <img src="./README_img/add.png" width="80%" />
 
 ### Records page
 
-The records page provides a comprehensive view of all leave records, allowing users to filter and search for specific records based on various criteria such as date range, leave type, and status. This page also allows users to edit or delete existing leave records as needed.
+The records page provides a comprehensive view of all leave records, allowing users to edit or delete existing leave records as needed.
 
 <img src="./README_img/records.png" width="80%" />
 
