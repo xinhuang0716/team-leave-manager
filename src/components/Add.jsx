@@ -230,7 +230,7 @@ const Add = () => {
         <Form onSubmit={handleSubmit}>
           <FormGroup>
             <label>姓名</label>
-            <input type="text" name="emp_name" required />
+            <input type="text" name="emp_name" required maxLength={16} />
           </FormGroup>
 
           <FormGroup>
@@ -253,7 +253,7 @@ const Add = () => {
 
           <FormGroup>
             <label>事由</label>
-            <input type="text" name="reason" />
+            <input type="text" name="reason" maxLength={64} />
           </FormGroup>
 
           <SubmitButton type="submit" disabled={submitting}>

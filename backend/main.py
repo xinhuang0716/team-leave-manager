@@ -1,4 +1,5 @@
 import json
+import logging
 import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
@@ -8,6 +9,11 @@ from utils.crud import insertData, selectData, updateData
 from utils.database import initDB
 from utils.model import FetchResponse, InsertModel, MessageResponse, UpdateModel
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 # Load configuration
 with open("./config/metadata.json", encoding="utf-8") as f: METADATA = json.load(f)
@@ -38,7 +44,8 @@ def add(data: InsertModel) -> MessageResponse:
         insertData(data.model_dump())
         return MessageResponse(message=f"Data inserted successfully: {data}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Error inserting data: %s", e)
+        raise HTTPException(status_code=500, detail="An internal server error occurred")
 
 
 @app.patch("/change", tags=["Change Record from Valid to Invalid"], response_model=MessageResponse)
@@ -47,7 +54,8 @@ def change(data: UpdateModel) -> MessageResponse:
         updateData(data.model_dump())
         return MessageResponse(message=f"Record updated successfully: {data}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Error updating data: %s", e)
+        raise HTTPException(status_code=500, detail="An internal server error occurred")
 
 
 @app.get("/fetch", tags=["Retrieve All Valid Records"], response_model=FetchResponse)
@@ -55,7 +63,8 @@ def fetch() -> FetchResponse:
     try:
         return FetchResponse(**selectData())
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error("Error fetching data: %s", e)
+        raise HTTPException(status_code=500, detail="An internal server error occurred")
 
 
 # Run the server

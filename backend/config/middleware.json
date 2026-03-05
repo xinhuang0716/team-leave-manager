@@ -1,6 +1,6 @@
 {
-    "allow_origins": ["*"],
+    "allow_origins": ["https://team-leave-manager.vercel.app"],
     "allow_credentials": false,
-    "allow_methods": ["*"],
-    "allow_headers": ["*"]
+    "allow_methods": ["GET", "POST", "PATCH"],
+    "allow_headers": ["Content-Type"]
 }
