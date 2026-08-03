@@ -1,151 +1,251 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import {
+  CalendarBlank,
+  ChartDonut,
+  Info,
+  Toolbox,
+} from "@phosphor-icons/react";
 import styled from "styled-components";
 
-const SidebarContainer = styled.nav`
-  width: 180px;
-  min-width: 180px;
-  height: 100vh;
-  background: linear-gradient(180deg, #1e3448 0%, #2e4661 40%, #34506e 100%);
-  padding: 28px 20px 20px;
-  box-shadow: 3px 0 20px rgba(0, 0, 0, 0.15);
+const SidebarContainer = styled.aside`
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
+  height: 100dvh;
   flex-direction: column;
-  position: relative;
-  z-index: 10;
+  padding: 26px 16px 22px;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+  background: rgba(29, 49, 73, 0.98);
 
-  @media (max-width: 768px) {
-    width: 100%;
-    min-width: unset;
-    height: auto;
-    flex-direction: row;
-    align-items: center;
-    padding: 12px 20px;
+  @media (max-width: 860px) {
+    position: fixed;
+    top: auto;
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+    height: 66px;
+    padding: 7px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-surface);
+    background: rgba(38, 61, 88, 0.98);
+    box-shadow: 0 18px 42px rgba(0, 6, 16, 0.46);
+    backdrop-filter: blur(16px);
   }
 `;
 
-const Title = styled.h2`
-  margin: 0 0 32px 0;
-  color: rgb(252, 215, 252);
-  white-space: nowrap;
-  font-size: 1.5rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  position: relative;
-  padding-bottom: 16px;
+const Brand = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px 26px;
 
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, rgb(252, 215, 252) 20%, transparent);
-    border-radius: 2px;
-  }
-
-  @media (max-width: 768px) {
-    margin: 0 28px 0 0;
-    font-size: 1.1rem;
-    padding-bottom: 0;
-
-    &::after {
-      display: none;
-    }
+  @media (max-width: 860px) {
+    display: none;
   }
 `;
 
-const NavList = styled.ul`
-  list-style: none;
-  padding: 0;
+const BrandMark = styled.div`
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid rgba(var(--primary-rgb), 0.25);
+  border-radius: var(--radius-control);
+  background: var(--primary-soft);
+
+  img {
+    display: block;
+    width: 24px;
+    height: 24px;
+  }
+`;
+
+const BrandName = styled.p`
   margin: 0;
+  color: var(--text-primary);
+  font-size: 0.94rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+`;
+
+const BrandCaption = styled.span`
+  display: block;
+  margin-top: 1px;
+  color: var(--sidebar-muted);
+  font-size: 0.72rem;
+  font-weight: 500;
+`;
+
+const NavLabel = styled.p`
+  margin: 16px 10px 9px;
+  color: #96a8ba;
+  font-size: 0.67rem;
+  font-weight: 650;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+
+  @media (max-width: 860px) {
+    display: none;
+  }
+`;
+
+const NavList = styled.nav`
   display: flex;
   flex-direction: column;
   gap: 4px;
 
-  @media (max-width: 768px) {
-    flex-direction: row;
-    gap: 4px;
+  @media (max-width: 860px) {
+    display: grid;
+    width: 100%;
+    height: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 3px;
   }
 `;
 
-const NavItem = styled.li``;
-
-const StyledLink = styled(Link)`
-  text-decoration: none;
-  color: rgba(252, 215, 252, ${({ $active }) => ($active ? "1" : "0.75")});
-  display: block;
-  padding: 12px 16px;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
-  white-space: nowrap;
-  font-size: 1rem;
-  font-weight: ${({ $active }) => ($active ? "600" : "400")};
-  letter-spacing: 0.5px;
+const StyledLink = styled(NavLink)`
   position: relative;
-  background-color: ${({ $active }) =>
-    $active ? "rgba(255, 255, 255, 0.12)" : "transparent"};
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 11px;
+  padding: 0 12px;
+  border-radius: var(--radius-control);
+  color: var(--sidebar-muted);
+  font-size: 0.86rem;
+  font-weight: 590;
+  text-decoration: none;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
 
-  ${({ $active }) =>
-    $active &&
-    `
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 3px;
-      height: 60%;
-      background: rgb(252, 215, 252);
-      border-radius: 0 3px 3px 0;
-    }
-  `}
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.12);
-    color: rgb(252, 215, 252);
-    transform: translateX(4px);
+  svg {
+    flex: 0 0 auto;
+    color: #a0b3c5;
+    transition: color var(--transition-fast);
   }
 
-  @media (max-width: 768px) {
-    padding: 8px 14px;
-    font-size: 0.9rem;
+  &::before {
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: -1px;
+    width: 2px;
+    border-radius: 2px;
+    background: transparent;
+    content: "";
+  }
+
+  &:hover {
+    background: rgba(var(--border-rgb), 0.045);
+    color: var(--text-primary);
+
+    svg {
+      color: var(--text-secondary);
+    }
+  }
+
+  &:active {
+    transform: scale(0.985);
+  }
+
+  &.active {
+    background: var(--primary-faint);
+    color: var(--primary-strong);
+
+    svg {
+      color: var(--primary);
+    }
+
+    &::before {
+      background: var(--primary);
+    }
+  }
+
+  @media (max-width: 860px) {
+    min-width: 0;
+    min-height: auto;
+    justify-content: center;
+    flex-direction: column;
+    gap: 3px;
+    padding: 4px 2px;
+    font-size: 0.65rem;
 
     &::before {
       display: none;
     }
 
-    &:hover {
-      transform: none;
+    &.active {
+      background: var(--primary-soft);
     }
   }
 `;
 
+const SidebarFooter = styled.div`
+  margin-top: auto;
+  padding: 18px 10px 0;
+  border-top: 1px solid var(--border);
+  color: #96a8ba;
+  font-size: 0.71rem;
+  line-height: 1.55;
+
+  strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+    font-weight: 620;
+  }
+
+  @media (max-width: 860px) {
+    display: none;
+  }
+`;
+
 const NAV_ITEMS = [
-  { to: "/", label: "Calendar" },
-  { to: "/records", label: "Records" },
-  { to: "/about", label: "About" },
+  { to: "/", label: "Calendar", icon: CalendarBlank, end: true },
+  { to: "/records", label: "Records", icon: ChartDonut },
+  { to: "/tools", label: "Tools", icon: Toolbox },
+  { to: "/about", label: "About", icon: Info },
 ];
 
-const Sidebar = () => {
-  const location = useLocation();
+const Sidebar = () => (
+  <SidebarContainer>
+    <Brand>
+      <BrandMark>
+        <img src="/vite.svg" alt="" aria-hidden="true" />
+      </BrandMark>
+      <div>
+        <BrandName>Team Leave</BrandName>
+        <BrandCaption>Planner</BrandCaption>
+      </div>
+    </Brand>
 
-  return (
-    <SidebarContainer>
-      <Title>LeaVe ^^</Title>
-      <NavList>
-        {NAV_ITEMS.map(({ to, label }) => (
-          <NavItem key={to}>
-            <StyledLink to={to} $active={location.pathname === to}>
-              {label}
-            </StyledLink>
-          </NavItem>
-        ))}
-      </NavList>
-    </SidebarContainer>
-  );
-};
+    <NavLabel>Workspace</NavLabel>
+    <NavList aria-label="Primary navigation">
+      {NAV_ITEMS.map(({ to, label, icon, end }) => (
+        <StyledLink key={to} to={to} end={end}>
+          {React.createElement(icon, {
+            size: 19,
+            weight: "regular",
+            "aria-hidden": "true",
+          })}
+          <span>{label}</span>
+        </StyledLink>
+      ))}
+    </NavList>
+
+    <SidebarFooter>
+      <strong>Team workspace</strong>
+      Plan time away with clarity.
+    </SidebarFooter>
+  </SidebarContainer>
+);
 
 export default Sidebar;

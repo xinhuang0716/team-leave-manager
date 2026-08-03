@@ -1,46 +1,48 @@
 # Team Leave Manager
 
-> A user-friendly Leave Management website for team members to manage and track their leave records efficiently.
+> A lightweight team leave planner for viewing, creating, and maintaining upcoming leave records.
 
 ![python-image] ![duckdb-image] ![fastapi-image] ![react-image] ![vite-image]
 
 ## Overview
 
-Team Leave Manager is a tool designed to help teams manage their leave records effectively. It provides a user-friendly interface for team members to create, view, and manage their leave records. The application is built using FastAPI for the backend and React for the frontend, with DuckDB as the database.
+Team Leave Manager is a web application that helps teams coordinate upcoming leave in one shared workspace. The frontend is built with React and Vite, the backend is powered by FastAPI, and DuckDB stores the leave records locally.
+
+The application includes a five-week workday calendar, a records workspace with filtering and sorting tools, and dedicated Tools and About pages. The frontend keeps its data in sync with the backend after records are created or removed.
 
 ### Landing page
 
-The landing page features a calendar that displays all leave records, allowing users to easily visualize their leave schedule and plan accordingly.
+The landing page displays Monday-to-Friday leave schedules for the upcoming five weeks. Each day is divided into AM and PM periods, and the current day is highlighted for quick orientation.
 
 <img src="./README_img/calendar.png" width="80%" />
 
 ### Create new leave
 
-Users can create a new leave record by filling out the form with the necessary details, such as start date, end date, and reason for leave. Once submitted, the new leave record will be added to the calendar and records page.
+Users can create leave records from the calendar page by entering a name, start and end dates, AM/PM periods, and an optional reason. A multi-day request is split into individual daily records and appears on both the calendar and records page after submission.
 
 <img src="./README_img/add.png" width="80%" />
 
 ### Records page
 
-The records page provides a comprehensive view of all leave records, allowing users to edit or delete existing leave records as needed.
+The records page lists upcoming active leave records. Users can search by name, filter by date, sort by date or name, clear filters, and delete a record after confirmation. Deletion is handled as a soft delete in the backend so removed records are excluded from the active view.
 
 <img src="./README_img/records.png" width="80%" />
 
 ### Backend API doc
 
-FastAPI automatically generates interactive API documentation using Swagger UI. This allows developers to easily explore and test the API endpoints, making it easier to understand how to interact with the backend services.
+FastAPI automatically generates interactive API documentation using Swagger UI. The documentation covers the health check, create, change, and records endpoints, allowing developers to inspect and test the backend API.
 
 <img src="./README_img/swagger.png" width="80%" />
 
 ## Prerequisites
 
-Make sure you have the following software with the specified versions or higher version installed on your machine:
+Make sure the following software is installed:
 
-|         | versoin |
-| ------- | ------- |
-| python  | 3.12.10 |
-| uv      | 0.9.17 |
-| node.js | 24.12.0 |
+|         | version               |
+| ------- | --------------------- |
+| Python  | 3.12 or later         |
+| uv      | latest stable version |
+| Node.js | latest stable version |
 
 ## Installation
 
@@ -53,54 +55,60 @@ To set up the project locally, follow these steps:
   ```
 
 - Frontend
+  - Install Node.js modules:
 
-   - Install Node.js modules:
-
-      ```bash
-      cd team-leave-manager
-      npm install
-      ```
+    ```bash
+    cd team-leave-manager
+    npm install
+    ```
 
 - Backend
+  - Create the virtual environment and install Python dependencies:
 
-   - Create virtual environment & install Python dependencies:
-
-      ```bash
-      cd team-leave-manager/backend
-      uv sync
-      ```
+    ```bash
+    cd team-leave-manager/backend
+    uv sync
+    ```
 
 ## Usage
 
-Use the following script to launch `backend` server:
+Start the backend server with:
 
 ```bash
 cd team-leave-manager/backend
 uv run main.py
 ```
 
-And run the following script to launch `frontend` server:
+In a second terminal, start the frontend development server with:
 
 ```bash
 cd team-leave-manager
 npm run dev
 ```
 
-Now, you can browse the frontend at `http://localhost:5173`. The frontend will make API calls to the backend server to fetch and manage leave records.
+You can browse the frontend at `http://localhost:5173`. It calls the backend at `http://localhost:8000` to fetch and manage leave records.
+
+By default, the backend creates the DuckDB database at `backend/DB/leave.db`. To use another database directory, set the `DB_PATH` environment variable before starting the backend (If you need to mount a volume for the database on your host platform).
 
 To access the API documentation, navigate to `http://localhost:8000/docs` in your web browser. This will open the Swagger UI, where you can explore and test the available API endpoints.
 
 ## Release History
 
 - 0.1
-  - It's a beta release, still need to polish.
+  - Beta release; further polishing is still needed.
 - 0.2
-  - Refactor the code structure and polish the UI design. Also fix some bugs while data streamlining the backend logic.
+  - Refactored the code structure and polished the UI design.
+  - Fixed bugs and streamlined the backend logic.
+- 0.3
+  - Optimized the backend implementation.
+  - Enhanced frontend functionality with record filtering and sorting.
+  - Automatically fills in the end date after a start date is selected.
+  - Further refined the UI design and user experience.
 
 ## TO-DO
 
-- Authentication (Optional)
-- Log record
+- Authentication (optional)
+- Audit log for record changes
 
 ## Contributing
 
@@ -109,7 +117,7 @@ To access the API documentation, navigate to `http://localhost:8000/docs` in you
 
 ## Contact
 
-Shall you have any problem, please let me knows. Look forward to your feedbacks and suggestions!
+If you encounter any problems or have suggestions, please feel free to get in touch.
 
 ```
 Name:  HSIN, HUANG

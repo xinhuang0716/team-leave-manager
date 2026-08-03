@@ -5,6 +5,7 @@ import { LeaveProvider } from "./contexts/LeaveContext";
 import MainLayout from "./layouts/MainLayout";
 import CalendarPage from "./pages/CalendarPage";
 import RecordsPage from "./pages/RecordsPage";
+import ToolsPage from "./pages/ToolsPage";
 import AboutPage from "./pages/AboutPage";
 
 const App = () => (
@@ -16,6 +17,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<CalendarPage />} />
             <Route path="/records" element={<RecordsPage />} />
+            <Route path="/tools" element={<ToolsPage />} />
             <Route path="/about" element={<AboutPage />} />
           </Routes>
         </MainLayout>

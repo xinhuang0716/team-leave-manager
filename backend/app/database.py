@@ -1,17 +1,19 @@
 import os
+from pathlib import Path
+
 import duckdb
 
 
 def initDB() -> None:
+    # Use a local ./DB directory during development when DB_PATH is not set.
+    # On Render, set DB_PATH to the Persistent Disk mount path (for example, /DB)
+    # so leave.db is stored on persistent storage instead of the temporary filesystem.
+    db_dir = Path(os.getenv("DB_PATH", "./DB"))
+    db_dir.mkdir(parents=True, exist_ok=True)
 
-    # Default to a local file if DB_PATH is not set
-    # DB_PATH is for Mount Path in Docker, e.g., /var/lib/data, and should be set in the environment variables
-    db_dir = os.getenv("DB_PATH", "./DB")
-    os.makedirs(db_dir, exist_ok=True)
-
-    # Connect to DuckDB once to initialise the schema
-    db_path = os.path.join(db_dir, "leave.db")
-    conn = duckdb.connect(db_path)
+    # Connect to DuckDB to initialise
+    db_path = db_dir / "leave.db"
+    conn = duckdb.connect(str(db_path))
 
     # Create table if not exists
     conn.sql(
@@ -25,9 +27,9 @@ def initDB() -> None:
             REASON       VARCHAR(64)  DEFAULT NULL,
             CONSTRAINT TIME CHECK (TIME IN ('AM', 'PM')),
             PRIMARY KEY (EMP_NAME, DATE, TIME, DELETE_TIME)
-        );
+        )
+        ;
         """
     )
 
-    # Close after initialisation; each request will open its own connection
     conn.close()

@@ -1,143 +1,225 @@
 import React from "react";
+import {
+  CalendarBlank,
+  ClockCountdown,
+  Funnel,
+  GithubLogo,
+  Lightning,
+} from "@phosphor-icons/react";
 import styled from "styled-components";
+import PageHeader from "../components/PageHeader";
 
-const PageContainer = styled.div`
-  line-height: 1.6;
-  overflow-y: auto;
-  position: relative;
-  max-height: 96vh;
-  padding: 8px 0;
+const Grid = styled.div`
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.55fr);
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 `;
 
-const Section = styled.section`
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: var(--radius-md);
-  padding: 24px 28px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(4px);
-  transition: all var(--transition-fast);
+const Surface = styled.section`
+  min-width: 0;
+  padding: clamp(24px, 4vw, 34px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-surface);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.7);
-    box-shadow: var(--shadow-sm);
+  h2 {
+    margin: 0 0 13px;
+    color: var(--text-primary);
+    font-size: 1.08rem;
+    font-weight: 660;
+    letter-spacing: -0.025em;
   }
 
-  p {
+  > p {
+    max-width: 68ch;
+    margin: 0;
     color: var(--text-secondary);
-    margin: 6px 0;
-    font-size: 0.93rem;
+    font-size: 0.86rem;
+    line-height: 1.75;
   }
 `;
 
-const SectionTitle = styled.h2`
-  border-bottom: 2px solid rgba(221, 210, 115, 0.6);
-  padding-bottom: 8px;
-  margin-top: 0;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 0.3px;
-`;
+const CapabilityList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 24px;
+  margin-top: 28px;
 
-const FeatureList = styled.ul`
-  list-style: none;
-  padding: 0;
-  width: fit-content;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const FeatureItem = styled.li`
-  background: rgba(252, 215, 252, 0.35);
-  padding: 12px 22px;
-  border-radius: var(--radius-sm);
-  font-size: 0.93rem;
-  color: var(--text-secondary);
-  border-left: 3px solid rgba(252, 215, 252, 0.8);
-  transition: all var(--transition-fast);
-
-  &:hover {
-    background: rgba(252, 215, 252, 0.5);
-    transform: translateX(4px);
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
   }
 `;
+
+const Capability = styled.div`
+  display: grid;
+  min-width: 0;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 11px;
+  padding: 17px 0;
+  border-top: 1px solid var(--border);
+
+  svg {
+    margin-top: 1px;
+    color: var(--primary);
+  }
+
+  strong {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+    font-size: 0.8rem;
+    font-weight: 640;
+  }
+
+  span {
+    display: block;
+    color: var(--text-tertiary);
+    font-size: 0.73rem;
+    line-height: 1.55;
+  }
+`;
+
+const MetaList = styled.dl`
+  display: grid;
+  gap: 0;
+  margin: 0;
+
+  div {
+    padding: 17px 0;
+    border-bottom: 1px solid var(--border);
+
+    &:first-child {
+      padding-top: 2px;
+    }
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+  }
+
+  dt {
+    margin-bottom: 5px;
+    color: var(--text-tertiary);
+    font-size: 0.67rem;
+    font-weight: 650;
+    letter-spacing: 0.065em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 0.82rem;
+    font-weight: 610;
+  }
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--primary-strong);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--text-primary);
+    }
+  }
+`;
+
+const CAPABILITIES = [
+  {
+    icon: CalendarBlank,
+    title: "5-week overview",
+    description: "See AM and PM availability across the team.",
+  },
+  {
+    icon: Lightning,
+    title: "Fast requests",
+    description: "Add a date range with only the details that matter.",
+  },
+  {
+    icon: Funnel,
+    title: "Useful records",
+    description: "Filter and sort by colleague or start date.",
+  },
+  {
+    icon: ClockCountdown,
+    title: "Room to grow",
+    description: "The Tools area is ready for focused office utilities.",
+  },
+];
 
 const AboutPage = () => (
-  <PageContainer>
-    <Section>
-      <SectionTitle>Overview</SectionTitle>
-      <p>
-        Team Leave Manager is a lightweight leave management system designed for
-        department teams. It provides colleagues with a clean, intuitive web
-        interface to submit leave requests and instantly view the leave
-        schedules of all team members at a glance.
-      </p>
-      <p>
-        The system is built with a modern full-stack architecture — React + Vite
-        on the frontend, and FastAPI on the backend — delivering a fast,
-        responsive, and seamless user experience.
-      </p>
-    </Section>
+  <>
+    <PageHeader
+      title="About"
+      description="A focused workspace for planning team leave without the spreadsheet overhead."
+    />
 
-    <Section>
-      <SectionTitle>Features</SectionTitle>
-      <FeatureList>
-        <FeatureItem>
-          Full-stack separation architecture (React + FastAPI) for clear
-          responsibility and easy maintenance.
-        </FeatureItem>
-        <FeatureItem>
-          Interactive 5-week calendar view showing all team members' leave at a
-          glance, with AM / PM time-slot breakdown.
-        </FeatureItem>
-        <FeatureItem>
-          One-click leave creation — simply fill in name, date range, and reason
-          to submit a new request.
-        </FeatureItem>
-        <FeatureItem>
-          Backend Swagger API documentation for easy integration and debugging.
-        </FeatureItem>
-      </FeatureList>
-    </Section>
+    <Grid>
+      <Surface>
+        <h2>Built for a clearer team rhythm</h2>
+        <p>
+          Team Leave Manager keeps requests, upcoming schedules, and leave
+          records in one lightweight workspace. The calendar makes coverage easy
+          to understand, while the records view keeps routine maintenance
+          direct.
+        </p>
 
-    <Section>
-      <SectionTitle>Usage</SectionTitle>
-      <p>
-        1. Open the <strong>Calendar</strong> page to browse the upcoming 5-week
-        leave schedule of all team members.
-      </p>
-      <p>
-        2. Click the <strong>+ Add Your Leave</strong> button to open the leave
-        form, fill in your name, start / end dates with AM or PM, and an
-        optional reason, then submit.
-      </p>
-      <p>
-        3. Switch to the <strong>Records</strong> page to review all leave
-        entries. Use the delete button to remove any incorrect or outdated
-        records.
-      </p>
-      <p>
-        4. For developer setup, API details, and further elaboration, refer to
-        the README file in the team-leave-manager repository{" "}
-        <a
-          href="https://github.com/xinhuang0716/team-leave-manager"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          https://github.com/xinhuang0716/team-leave-manager
-        </a>
-        .
-      </p>
-    </Section>
+        <CapabilityList>
+          {CAPABILITIES.map(({ icon, title, description }) => (
+            <Capability key={title}>
+              {React.createElement(icon, {
+                size: 20,
+                weight: "light",
+                "aria-hidden": "true",
+              })}
+              <div>
+                <strong>{title}</strong>
+                <span>{description}</span>
+              </div>
+            </Capability>
+          ))}
+        </CapabilityList>
+      </Surface>
 
-    <Section>
-      <SectionTitle>Contributors</SectionTitle>
-      <p>tom.h.huang@fubon.com</p>
-      <p>jason.hp.hsu@fubon.com</p>
-    </Section>
-  </PageContainer>
+      <Surface>
+        <h2>Project details</h2>
+        <MetaList>
+          <div>
+            <dt>Frontend</dt>
+            <dd>React + Vite</dd>
+          </div>
+          <div>
+            <dt>Backend</dt>
+            <dd>FastAPI + DuckDB</dd>
+          </div>
+          <div>
+            <dt>Repository</dt>
+            <dd>
+              <a
+                href="https://github.com/xinhuang0716/team-leave-manager"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GithubLogo size={17} aria-hidden="true" />
+                View on GitHub
+              </a>
+            </dd>
+          </div>
+        </MetaList>
+      </Surface>
+    </Grid>
+  </>
 );
 
 export default AboutPage;

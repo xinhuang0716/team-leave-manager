@@ -3,34 +3,46 @@ import styled from "styled-components";
 import Sidebar from "../components/Sidebar";
 
 const LayoutContainer = styled.div`
-  display: flex;
-  height: 100vh;
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+  min-height: 100dvh;
+  background: var(--canvas);
 
-  @media (max-width: 768px) {
-    flex-direction: column;
+  @media (max-width: 860px) {
+    display: block;
+    padding-bottom: 86px;
   }
 `;
 
 const ContentArea = styled.main`
-  flex: 1;
-  padding: 2.5vh 4%;
-  overflow-y: auto;
-  background: linear-gradient(
-    135deg,
-    rgb(225, 237, 250) 0%,
-    rgb(235, 243, 252) 50%,
-    rgb(228, 238, 250) 100%
-  );
+  width: 100%;
+  min-width: 0;
+  padding: 32px clamp(24px, 3.5vw, 56px) 56px;
 
-  @media (max-width: 768px) {
-    padding: 2vh 3%;
+  @media (max-width: 860px) {
+    padding: 28px 20px 40px;
   }
+
+  @media (max-width: 520px) {
+    padding: 24px 16px 32px;
+  }
+`;
+
+const ContentInner = styled.div`
+  width: 100%;
+  min-width: 0;
+  max-width: 1440px;
+  margin: 0 auto;
 `;
 
 const MainLayout = ({ children }) => (
   <LayoutContainer>
     <Sidebar />
-    <ContentArea>{children}</ContentArea>
+    <ContentArea>
+      <ContentInner>{children}</ContentInner>
+    </ContentArea>
   </LayoutContainer>
 );
 

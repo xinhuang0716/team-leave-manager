@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import { format } from "date-fns";
+import { ArrowRight, Plus, X } from "@phosphor-icons/react";
 import Modal from "react-modal";
 import styled from "styled-components";
 import { useLeaves } from "../hooks/useLeaves";
@@ -6,209 +8,263 @@ import { generateLeavePayloads } from "../utils/dateUtils";
 
 Modal.setAppElement("#root");
 
-/* ── Styled Components ───────────────────────────────────── */
-
 const AddButton = styled.button`
-  margin-top: 2vh;
-  margin-bottom: 3vh;
-  width: 25%;
-  min-width: 180px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  font-size: 16px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  border: 2px solid rgba(61, 145, 170, 0.3);
-  position: relative;
-  overflow: hidden;
-  z-index: 1;
-  box-shadow: var(--shadow-md);
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 17px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-control);
+  background: var(--primary);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-on-accent);
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--text-primary);
-  transition: all var(--transition-smooth);
-  backdrop-filter: blur(4px);
-
-  &::before {
-    content: "";
-    width: 0;
-    height: 100%;
-    border-radius: var(--radius-md);
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: linear-gradient(
-      135deg,
-      rgba(61, 145, 170, 0.9) 0%,
-      rgba(70, 135, 209, 0.8) 100%
-    );
-    transition: width var(--transition-smooth);
-    display: block;
-    z-index: -1;
-  }
+  font-size: 0.85rem;
+  font-weight: 720;
+  white-space: nowrap;
+  transition:
+    background var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
 
   &:hover {
-    color: white;
-    border-color: transparent;
-    box-shadow: 0 6px 20px rgba(61, 145, 170, 0.35);
+    background: var(--primary-strong);
+    box-shadow: 0 4px 12px rgba(0, 6, 16, 0.28);
     transform: translateY(-1px);
-
-    &::before {
-      width: 100%;
-    }
   }
 
   &:active {
-    transform: translateY(0);
+    transform: scale(0.98);
   }
 
-  @media (max-width: 768px) {
-    width: 50%;
+  @media (max-width: 680px) {
+    width: 100%;
+  }
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 26px;
+`;
+
+const ModalContext = styled.p`
+  margin: 0 0 5px;
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 620;
+`;
+
+const ModalTitle = styled.h2`
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.55rem;
+  font-weight: 680;
+  letter-spacing: -0.035em;
+`;
+
+const CloseButton = styled.button`
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-muted);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text-primary);
+  }
+
+  &:active {
+    transform: scale(0.96);
   }
 `;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 18px;
+`;
+
+const FormRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const FormGroup = styled.div`
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  padding-bottom: 8px;
+  gap: 7px;
 
   label {
-    margin-bottom: 6px;
-    font-weight: 600;
-    font-size: 0.88rem;
-    color: var(--text-primary);
-    letter-spacing: 0.3px;
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 650;
   }
 
   input,
   select {
-    padding: 8px 12px;
-    border: 1.5px solid #dde3ea;
-    border-radius: var(--radius-sm);
-    font-size: 14px;
-    background: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    min-height: 44px;
+    padding: 9px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-control);
+    background: var(--canvas-elevated);
     color: var(--text-primary);
-    transition: all var(--transition-fast);
-    font-family: inherit;
+    font-size: 0.86rem;
+    transition:
+      border-color var(--transition-fast),
+      background var(--transition-fast),
+      box-shadow var(--transition-fast);
 
-    &:focus {
-      border-color: var(--accent-blue);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(70, 135, 209, 0.15);
-      background: white;
+    &:hover {
+      border-color: rgba(var(--border-rgb), 0.24);
     }
 
-    &:hover:not(:focus) {
-      border-color: #b0bec5;
+    &:focus {
+      border-color: var(--primary);
+      background: var(--field-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.12);
     }
   }
 
   select {
-    margin-top: 6px;
-    cursor: pointer;
+    color-scheme: dark;
   }
+`;
+
+const DateFields = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 80px;
+  gap: 8px;
+`;
+
+const HelperText = styled.p`
+  margin: -1px 0 0;
+  color: var(--text-tertiary);
+  font-size: 0.72rem;
+  line-height: 1.55;
+`;
+
+const ErrorMessage = styled.p`
+  margin: 0;
+  padding: 11px 12px;
+  border: 1px solid rgba(225, 132, 132, 0.24);
+  border-radius: var(--radius-control);
+  background: var(--danger-soft);
+  color: #efaaaa;
+  font-size: 0.8rem;
 `;
 
 const SubmitButton = styled.button`
-  margin-top: 8px;
-  padding: 10px 30px;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-  color: white;
-  border: none;
-  border-radius: var(--radius-sm);
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 3px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-control);
+  background: var(--primary);
+  color: var(--text-on-accent);
   cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
-  transition: all var(--transition-fast);
-  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+  font-size: 0.86rem;
+  font-weight: 720;
+  transition:
+    background var(--transition-fast),
+    transform var(--transition-fast);
 
-  &:hover {
-    box-shadow: 0 4px 16px rgba(0, 123, 255, 0.4);
-    transform: translateY(-1px);
+  &:hover:not(:disabled) {
+    background: var(--primary-strong);
   }
 
-  &:active {
-    transform: translateY(0);
+  &:active:not(:disabled) {
+    transform: scale(0.985);
   }
 
   &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+    cursor: wait;
+    opacity: 0.58;
   }
 `;
 
-const ModalTitle = styled.h3`
-  margin: 0 0 20px 0;
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  letter-spacing: 0.3px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid rgba(70, 135, 209, 0.15);
-`;
-
-/* ── Modal inline styles (react-modal expects style objects) ── */
-
-const modalOverlayStyle = {
-  position: "fixed",
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: "rgba(0, 0, 0, 0.4)",
-  backdropFilter: "blur(4px)",
-  zIndex: 2,
-};
-
-const modalContentStyle = {
-  position: "absolute",
-  width: "50%",
-  maxWidth: "460px",
-  minWidth: "300px",
-  top: "50%",
-  left: "50%",
-  right: "auto",
-  bottom: "auto",
-  transform: "translate(-50%, -50%)",
-  background: "rgb(235, 243, 252)",
-  borderRadius: "16px",
-  padding: "28px 32px",
-  zIndex: 3,
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Consolas, sans-serif, 'Microsoft YaHei', 'SimHei'",
-  border: "1px solid rgba(70, 135, 209, 0.12)",
-  boxShadow: "0 20px 60px rgba(0, 0, 0, 0.15)",
-};
-
-/* ── Component ────────────────────────────────────────────── */
-
 const Add = () => {
+  const formRef = useRef(null);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [endDateTouched, setEndDateTouched] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const { addLeave } = useLeaves();
+  const today = format(new Date(), "yyyy-MM-dd");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const fd = new FormData(e.target);
-    const formData = Object.fromEntries(fd.entries());
+  const resetForm = () => {
+    formRef.current?.reset();
+    setStartDate("");
+    setEndDate("");
+    setEndDateTouched(false);
+    setErrorMessage("");
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    resetForm();
+  };
+
+  const handleStartDateChange = (event) => {
+    const nextStartDate = event.target.value;
+    setStartDate(nextStartDate);
+    setErrorMessage("");
+    setEndDate((currentEndDate) => {
+      if (
+        !endDateTouched ||
+        !currentEndDate ||
+        currentEndDate < nextStartDate
+      ) {
+        return nextStartDate;
+      }
+      return currentEndDate;
+    });
+  };
+
+  const handleEndDateChange = (event) => {
+    setEndDate(event.target.value);
+    setEndDateTouched(true);
+    setErrorMessage("");
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = Object.fromEntries(new FormData(event.currentTarget));
 
     try {
-      const payloads = generateLeavePayloads(formData);
       setSubmitting(true);
-      await addLeave(payloads);
-      setModalIsOpen(false);
-      e.target.reset();
-    } catch (err) {
-      alert(err.message || "An error occurred while adding the leave.");
+      setErrorMessage("");
+      await addLeave(generateLeavePayloads(formData));
+      closeModal();
+    } catch (error) {
+      setErrorMessage(error.message || "Unable to add this leave request.");
     } finally {
       setSubmitting(false);
     }
@@ -217,47 +273,102 @@ const Add = () => {
   return (
     <>
       <AddButton type="button" onClick={() => setModalIsOpen(true)}>
-        + Add Your Leave
+        <Plus size={18} weight="bold" aria-hidden="true" />
+        新增請假
       </AddButton>
 
       <Modal
         isOpen={modalIsOpen}
-        onRequestClose={() => setModalIsOpen(false)}
-        contentLabel="Add Leave"
-        style={{ overlay: modalOverlayStyle, content: modalContentStyle }}
+        onRequestClose={closeModal}
+        contentLabel="新增請假"
+        className="leave-modal"
+        overlayClassName="leave-modal-overlay"
       >
-        <ModalTitle>New Leave Request</ModalTitle>
-        <Form onSubmit={handleSubmit}>
+        <ModalHeader>
+          <div>
+            <ModalContext>Leave request</ModalContext>
+            <ModalTitle>新增請假</ModalTitle>
+          </div>
+          <CloseButton
+            type="button"
+            onClick={closeModal}
+            aria-label="Close dialog"
+          >
+            <X size={18} aria-hidden="true" />
+          </CloseButton>
+        </ModalHeader>
+
+        <Form ref={formRef} onSubmit={handleSubmit}>
           <FormGroup>
-            <label>姓名</label>
-            <input type="text" name="emp_name" required />
+            <label htmlFor="emp_name">姓名</label>
+            <input
+              id="emp_name"
+              type="text"
+              name="emp_name"
+              maxLength="16"
+              required
+            />
           </FormGroup>
 
-          <FormGroup>
-            <label>請假起日</label>
-            <input type="date" name="start_date" required />
-            <select name="start_time" defaultValue="AM">
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
-          </FormGroup>
+          <FormRow>
+            <FormGroup>
+              <label htmlFor="start_date">請假起日</label>
+              <DateFields>
+                <input
+                  id="start_date"
+                  type="date"
+                  name="start_date"
+                  min={today}
+                  value={startDate}
+                  onChange={handleStartDateChange}
+                  required
+                />
+                <select
+                  name="start_time"
+                  defaultValue="AM"
+                  aria-label="起日時段"
+                >
+                  <option value="AM">AM</option>
+                  <option value="PM">PM</option>
+                </select>
+              </DateFields>
+              <HelperText>選擇後會自動帶入請假終日。</HelperText>
+            </FormGroup>
+
+            <FormGroup>
+              <label htmlFor="end_date">請假終日</label>
+              <DateFields>
+                <input
+                  id="end_date"
+                  type="date"
+                  name="end_date"
+                  min={startDate || today}
+                  value={endDate}
+                  onChange={handleEndDateChange}
+                  required
+                />
+                <select name="end_time" defaultValue="AM" aria-label="終日時段">
+                  <option value="AM">AM</option>
+                  <option value="PM">PM</option>
+                </select>
+              </DateFields>
+            </FormGroup>
+          </FormRow>
 
           <FormGroup>
-            <label>請假終日</label>
-            <input type="date" name="end_date" required />
-            <select name="end_time" defaultValue="AM">
-              <option value="AM">AM</option>
-              <option value="PM">PM</option>
-            </select>
+            <label htmlFor="reason">事由（選填）</label>
+            <input id="reason" type="text" name="reason" maxLength="64" />
           </FormGroup>
 
-          <FormGroup>
-            <label>事由</label>
-            <input type="text" name="reason" />
-          </FormGroup>
+          {errorMessage && (
+            <ErrorMessage role="alert">{errorMessage}</ErrorMessage>
+          )}
 
           <SubmitButton type="submit" disabled={submitting}>
-            {submitting ? "Submitting…" : "Submit"}
+            {submitting ? "Submitting..." : "Submit request"}
+            {!submitting && (
+              <ArrowRight size={17} weight="bold" aria-hidden="true" />
+            )}
           </SubmitButton>
         </Form>
       </Modal>
