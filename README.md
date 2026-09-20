@@ -8,6 +8,8 @@
 
 Team Leave Manager is a web application that helps teams coordinate upcoming leave in one shared workspace. The frontend is built with React and Vite. The FastAPI backend accesses leave records in Cloudflare D1 through the Cloudflare Python SDK.
 
+For a fully local deployment using DuckDB instead of Cloudflare D1, see the [local_deploy](https://github.com/xinhuang0716/team-leave-manager/tree/local_deploy) branch.
+
 The application includes a five-week workday calendar, a records workspace with filtering and sorting tools, and dedicated Tools and About pages. The frontend keeps its data in sync with the backend after records are created or removed.
 
 ### Landing page
