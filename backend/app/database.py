@@ -1,35 +1,27 @@
-import os
-from pathlib import Path
-
-import duckdb
+from cloudflare import AsyncCloudflare
 
 
-def initDB() -> None:
-    # Use a local ./DB directory during development when DB_PATH is not set.
-    # On Render, set DB_PATH to the Persistent Disk mount path (for example, /DB)
-    # so leave.db is stored on persistent storage instead of the temporary filesystem.
-    db_dir = Path(os.getenv("DB_PATH", "./DB"))
-    db_dir.mkdir(parents=True, exist_ok=True)
+class D1:
+    def __init__(self, client: AsyncCloudflare, cloudflare_account_id: str, d1_id: str):
+        self.client = client
+        self.cloudflare_account_id = cloudflare_account_id
+        self.d1_id = d1_id
 
-    # Connect to DuckDB to initialise
-    db_path = db_dir / "leave.db"
-    conn = duckdb.connect(str(db_path))
-
-    # Create table if not exists
-    conn.sql(
-        """
-        CREATE TABLE IF NOT EXISTS LEAVE (
-            CREATE_TIME  TIMESTAMP_S  NOT NULL,
-            DELETE_TIME  VARCHAR(16)  NOT NULL DEFAULT 'N',
-            EMP_NAME     VARCHAR(16)  NOT NULL,
-            DATE         DATE         NOT NULL,
-            TIME         VARCHAR(4)   NOT NULL,
-            REASON       VARCHAR(64)  DEFAULT NULL,
-            CONSTRAINT TIME CHECK (TIME IN ('AM', 'PM')),
-            PRIMARY KEY (EMP_NAME, DATE, TIME, DELETE_TIME)
+    async def query(self, sql: str, params: list[str] | None = None):
+        """Execute a SQL query against the D1 database."""
+        page = await self.client.d1.database.query(
+            account_id=self.cloudflare_account_id,
+            database_id=self.d1_id,
+            sql=sql,
+            params=params or [],
         )
-        ;
-        """
-    )
 
-    conn.close()
+        if not page.result:
+            raise RuntimeError("D1 returned no query result")
+
+        # Return first SQL command result
+        result = page.result[0]
+        if result.success is False:
+            raise RuntimeError("D1 query failed")
+
+        return result

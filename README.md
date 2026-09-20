@@ -2,11 +2,11 @@
 
 > A lightweight team leave planner for viewing, creating, and maintaining upcoming leave records.
 
-![python-image] ![duckdb-image] ![fastapi-image] ![react-image] ![vite-image]
+![python-image] ![fastapi-image] ![cloudflare-image] ![react-image] ![vite-image]
 
 ## Overview
 
-Team Leave Manager is a web application that helps teams coordinate upcoming leave in one shared workspace. The frontend is built with React and Vite, the backend is powered by FastAPI, and DuckDB stores the leave records locally.
+Team Leave Manager is a web application that helps teams coordinate upcoming leave in one shared workspace. The frontend is built with React and Vite. The FastAPI backend accesses leave records in Cloudflare D1 through the Cloudflare Python SDK.
 
 The application includes a five-week workday calendar, a records workspace with filtering and sorting tools, and dedicated Tools and About pages. The frontend keeps its data in sync with the backend after records are created or removed.
 
@@ -43,6 +43,28 @@ Make sure the following software is installed:
 | Python  | 3.12 or later         |
 | uv      | latest stable version |
 | Node.js | latest stable version |
+
+Create a Cloudflare D1 database, then run the following SQL in its console to create the `LEAVE` table:
+
+```sql
+CREATE TABLE IF NOT EXISTS LEAVE (
+    CREATE_TIME TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    DELETE_TIME TEXT NOT NULL DEFAULT 'N',
+    EMP_NAME TEXT NOT NULL,
+    DATE TEXT NOT NULL,
+    TIME TEXT NOT NULL CHECK (TIME IN ('AM', 'PM')),
+    REASON TEXT,
+    PRIMARY KEY (EMP_NAME, DATE, TIME, DELETE_TIME)
+);
+```
+
+The backend needs a Cloudflare API token with access to the D1 database, the Cloudflare account ID, and the D1 database ID. Copy `backend/config/.env.example` to `backend/config/.env` and fill in all three values:
+
+```dotenv
+CLOUDFLARE_API_TOKEN=your_api_token
+CLOUDFLARE_ACCOUNT_ID=your_account_id
+D1_ID=your_database_id
+```
 
 ## Installation
 
@@ -88,8 +110,6 @@ npm run dev
 
 You can browse the frontend at `http://localhost:5173`. It calls the backend at `http://localhost:8000` to fetch and manage leave records.
 
-By default, the backend creates the DuckDB database at `backend/DB/leave.db`. To use another database directory, set the `DB_PATH` environment variable before starting the backend (If you need to mount a volume for the database on your host platform).
-
 To access the API documentation, navigate to `http://localhost:8000/docs` in your web browser. This will open the Swagger UI, where you can explore and test the available API endpoints.
 
 ## Release History
@@ -104,6 +124,10 @@ To access the API documentation, navigate to `http://localhost:8000/docs` in you
   - Enhanced frontend functionality with record filtering and sorting.
   - Automatically fills in the end date after a start date is selected.
   - Further refined the UI design and user experience.
+- 0.4
+  - Migrated leave-record storage from DuckDB to Cloudflare D1.
+  - Updated the FastAPI backend to query D1 through the Cloudflare Python SDK.
+  - Added environment-based D1 configuration and Taiwan-time handling for record queries and timestamps.
 
 ## TO-DO
 
@@ -132,4 +156,4 @@ Dept:  證券 數據科學部 模型建置科(5F)
 [react-image]: https://shields.io/badge/react-black?logo=react&style=for-the-badge
 [fastapi-image]: https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi
 [vite-image]: https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=Vite&logoColor=white
-[duckdb-image]: https://img.shields.io/badge/Duckdb-000000?style=for-the-badge&logo=Duckdb&logoColor=yellow
+[cloudflare-image]: https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=Cloudflare&logoColor=white

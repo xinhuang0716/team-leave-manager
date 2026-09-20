@@ -1,7 +1,7 @@
 {
     "title": "Team Leave Manager API",
     "description": "API for managing team leave records.",
-    "version": "0.3.1",
+    "version": "1.0.4",
     "openapi_tags": [
         {
             "name": "Health",

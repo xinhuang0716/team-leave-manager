@@ -201,7 +201,7 @@ const AboutPage = () => (
           </div>
           <div>
             <dt>Backend</dt>
-            <dd>FastAPI + DuckDB</dd>
+            <dd>FastAPI + Cloudflare D1</dd>
           </div>
           <div>
             <dt>Repository</dt>

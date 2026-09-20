@@ -3,13 +3,14 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from cloudflare import AsyncCloudflare
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.crud import insertData, selectData, updateData
-from app.database import initDB
+from app.database import D1
 from app.model import FetchResponse, InsertModel, MessageResponse, UpdateModel
-
+from app.settings import load_settings
 
 # Load configuration
 BASE_DIR = Path(__file__).resolve().parent
@@ -21,11 +22,18 @@ with (BASE_DIR / "config" / "middleware.json").open(encoding="utf-8") as file:
     MIDDLEWARE = json.load(file)
 
 
-# Initialize
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    initDB()
-    yield
+    settings = load_settings()
+
+    async with AsyncCloudflare(api_token=settings.cloudflare_api_token.get_secret_value()) as client:
+        app.state.db = D1(
+            client,
+            cloudflare_account_id=settings.cloudflare_account_id,
+            d1_id=settings.d1_id,
+        )
+
+        yield
 
 
 # Create the FastAPI application
@@ -40,34 +48,34 @@ def health():
 
 
 @app.post("/api/add", tags=["Create"], response_model=MessageResponse)
-def add(data: InsertModel) -> MessageResponse:
+async def add(data: InsertModel, request: Request) -> MessageResponse:
     try:
-        insertData(data.model_dump())
+        await insertData(request.app.state.db, data.model_dump())
 
         return MessageResponse(message=f"Data inserted successfully: {data}")
-    
+
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error)) from error
+        raise HTTPException(status_code=500, detail="Database request failed") from error
 
 
 @app.patch("/api/change", tags=["Change"], response_model=MessageResponse)
-def change(data: UpdateModel) -> MessageResponse:
+async def change(data: UpdateModel, request: Request) -> MessageResponse:
     try:
-        updateData(data.model_dump())
+        await updateData(request.app.state.db, data.model_dump())
 
         return MessageResponse(message=f"Record updated successfully: {data}")
-    
+
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error)) from error
+        raise HTTPException(status_code=500, detail="Database request failed") from error
 
 
 @app.get("/api/fetch", tags=["Records"], response_model=FetchResponse)
-def fetch() -> FetchResponse:
+async def fetch(request: Request) -> FetchResponse:
     try:
-        return FetchResponse(**selectData())
-    
+        return FetchResponse(**(await selectData(request.app.state.db)))
+
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error)) from error
+        raise HTTPException(status_code=500, detail="Database request failed") from error
 
 
 # Start server
